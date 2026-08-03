@@ -4,8 +4,19 @@ import Layout from '../layouts/Layout.astro';
 const allPosts = await Astro.glob('../content/posts/*.md');
 const now = new Date();
 
-// Filter ONLY articles that are explicitly marked as featured
+// Helper: Check if an article is active (not auto-archived)
+function isArticleActive(post) {
+  if (post.frontmatter.archive_after) {
+    const archiveDate = new Date(post.frontmatter.archive_after);
+    if (now > archiveDate) return false; // Auto-archived!
+  }
+  return true;
+}
+
+// Filter ONLY articles explicitly marked featured AND active
 const featuredPosts = allPosts.filter(post => {
+  if (!isArticleActive(post)) return false;
+
   const val = post.frontmatter.featured;
   const isTrue = val === true || val === 'true' || val === 'True';
   if (!isTrue) return false;
@@ -44,7 +55,7 @@ const featuredPosts = allPosts.filter(post => {
         <a href={`/posts/${slug}`} class="featured-card">
           <span class="featured-badge">FEATURED REPORT</span>
           <h2 class="featured-title">{post.frontmatter.title}</h2>
-          <div class="featured-byline">Written by: Umbrellaman • {cleanDate}</div>
+          <div class="featured-byline">Written by: Umbrelllaman • {cleanDate}</div>
           {post.frontmatter.image && <img src={post.frontmatter.image} class="featured-img" alt="" />}
           <p style="color: var(--text-muted);">{post.frontmatter.summary}</p>
         </a>
