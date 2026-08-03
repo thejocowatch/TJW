@@ -1,0 +1,119 @@
+---
+interface Props {
+  title: string;
+  activeTab?: string;
+}
+
+const { title, activeTab = '' } = Astro.props;
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+      :root { --brand-blue: #0A66C2; --brand-dark: #0F172A; --bg-body: #FAFAFA; --border-light: #E2E8F0; --text-main: #1E293B; --text-muted: #64748B; }
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      body { font-family: 'Inter', -apple-system, sans-serif; background-color: var(--bg-body); color: var(--text-main); line-height: 1.6; }
+      
+      .top-bar { background: #fff; border-bottom: 1px solid var(--border-light); padding: 0.5rem 1.5rem; font-size: 0.8rem; color: var(--text-muted); }
+      .top-bar-container { max-width: 1100px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+
+      /* Translucent Weather Bug */
+      .weather-bug {
+        background: rgba(15, 23, 42, 0.04);
+        border: 1px solid var(--border-light);
+        border-radius: 12px;
+        padding: 0.2rem 0.65rem;
+        font-size: 0.78rem;
+        font-weight: 500;
+        color: #475569;
+        display: inline-flex;
+        align-items: center;
+      }
+
+      header { background: #ffffff; border-bottom: 2px solid var(--brand-dark); padding: 1.5rem 1.5rem 1rem; position: relative; }
+      .header-wrap { max-width: 1100px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; position: relative; }
+      
+      .header-logo { position: absolute; left: 0; top: 0; height: 90px; width: auto; max-width: 180px; object-fit: contain; }
+      @media (max-width: 768px) { .header-logo { position: static; height: 75px; margin-bottom: 0.5rem; } }
+
+      .brand-title { font-size: 2.75rem; font-weight: 800; color: var(--brand-dark); text-transform: uppercase; text-decoration: none; display: inline-block; }
+      .brand-title span { color: var(--brand-blue); }
+      .tagline { font-family: 'Newsreader', serif; font-size: 1.15rem; font-style: italic; color: var(--text-muted); max-width: 650px; text-align: center; margin: 0.5rem auto 1.5rem; }
+
+      .nav-categories { display: flex; justify-content: center; gap: 2rem; border-top: 1px solid var(--border-light); padding-top: 1rem; font-size: 0.85rem; font-weight: 600; text-transform: uppercase; width: 100%; }
+      .nav-categories a { color: var(--text-main); text-decoration: none; }
+      .nav-categories a:hover, .nav-categories a.active { color: var(--brand-blue); border-bottom: 2px solid var(--brand-blue); padding-bottom: 2px; }
+
+      .container { max-width: 1100px; margin: 2.5rem auto; padding: 0 1.5rem; display: grid; grid-template-columns: 2fr 1fr; gap: 3rem; }
+      @media (max-width: 768px) { .container { grid-template-columns: 1fr; } }
+      
+      .sidebar-box { background: #ffffff; border: 1px solid var(--border-light); border-radius: 8px; padding: 1.5rem; margin-bottom: 2rem; }
+    </style>
+  </head>
+  <body>
+    <div class="top-bar">
+      <div class="top-bar-container">
+        <span>Johnson County, Kansas • Independent Newsroom</span>
+        <!-- Minimal Translucent Weather Bug -->
+        <div class="weather-bug">
+          <span id="weather-temp">Current temp --°F</span>
+        </div>
+      </div>
+    </div>
+
+    <header>
+      <div class="header-wrap">
+        <a href="/"><img src="/logo.png" alt="The JoCo Watch Logo" class="header-logo" onerror="this.style.display='none'" /></a>
+        
+        <a href="/" class="brand-title">THE JOCO <span>WATCH</span></a>
+        <p class="tagline">Clear, careful reporting on public safety, crime, courts, and local government across Johnson County.</p>
+
+        <nav class="nav-categories">
+          <a href="/" class={activeTab === 'featured' ? 'active' : ''}>Featured</a>
+          <a href="/public-safety" class={activeTab === 'public-safety' ? 'active' : ''}>Public Safety</a>
+          <a href="/courts-crime" class={activeTab === 'courts-crime' ? 'active' : ''}>Courts & Crime</a>
+          <a href="/city-issues" class={activeTab === 'city-issues' ? 'active' : ''}>City Issues</a>
+          <a href="/deep-dives" class={activeTab === 'deep-dives' ? 'active' : ''}>Deep Dives</a>
+          <a href="/all-articles" class={activeTab === 'all-articles' ? 'active' : ''}>All Articles</a>
+        </nav>
+      </div>
+    </header>
+
+    <div class="container">
+      <main>
+        <slot />
+      </main>
+
+      <aside>
+        <div class="sidebar-box">
+          <h3 style="font-size: 1rem; font-weight: 700; margin-bottom: 0.75rem;">About The JoCo Watch</h3>
+          <p style="font-size: 0.9rem; color: var(--text-muted);">We cover public safety and local stories across Johnson County. Not real-time breaking news—just clear, careful reporting.</p>
+        </div>
+      </aside>
+    </div>
+
+    <script>
+      async function fetchTemp() {
+        try {
+          const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=38.98&longitude=-94.67&current_weather=true&temperature_unit=fahrenheit');
+          const data = await res.json();
+          if (data && data.current_weather) {
+            const temp = Math.round(data.current_weather.temperature);
+            const el = document.getElementById('weather-temp');
+            if (el) el.textContent = `Current temp ${temp}°F`;
+          }
+        } catch (e) {
+          console.error(e);
+        }
+      }
+      fetchTemp();
+    </script>
+  </body>
+</html>
