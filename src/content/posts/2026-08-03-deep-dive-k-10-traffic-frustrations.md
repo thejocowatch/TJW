@@ -1,7 +1,7 @@
 ---
 title: "Deep Dive: K-10 Traffic Frustrations"
 date: 2026-08-03
-category: Deep-dives
+category: deep-dives
 featured: true
 feature_until: 2026-08-15
 archive_after: 2026-09-30
