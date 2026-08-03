@@ -1,0 +1,52 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const allPosts = await Astro.glob('../content/posts/*.md');
+
+// Sort newest to oldest
+const sortedPosts = allPosts.sort((a, b) => {
+  return new Date(b.frontmatter.date).getTime() - new Date(a.frontmatter.date).getTime();
+});
+
+const categoryMap = {
+  'public-safety': 'Public Safety',
+  'courts-crime': 'Courts & Crime',
+  'city-issues': 'City Issues',
+  'deep-dives': 'Deep Dives'
+};
+---
+
+<Layout title="Archive | The JoCo Watch" activeTab="archive">
+  <style>
+    .section-heading { font-size: 0.85rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: var(--brand-blue); border-bottom: 2px solid var(--brand-blue); padding-bottom: 0.4rem; margin-bottom: 1.5rem; }
+    .posts-feed { display: flex; flex-direction: column; gap: 1.5rem; }
+    .article-card { background: #ffffff; border: 1px solid var(--border-light); border-radius: 8px; padding: 1.25rem 1.5rem; text-decoration: none; color: inherit; display: grid; grid-template-columns: 1fr 140px; gap: 1.5rem; align-items: center; }
+    .article-card:hover { border-color: var(--brand-blue); box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); }
+    .article-meta { font-size: 0.75rem; font-weight: 700; color: var(--brand-blue); text-transform: uppercase; margin-bottom: 0.2rem; }
+    .byline { font-size: 0.75rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.4rem; }
+    .article-title { font-family: 'Newsreader', serif; font-size: 1.4rem; font-weight: 600; color: var(--brand-dark); margin-bottom: 0.4rem; }
+    .article-summary { font-size: 0.88rem; color: var(--text-muted); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .thumbnail { width: 140px; height: 100px; object-fit: cover; border-radius: 6px; border: 1px solid var(--border-light); background-color: #f1f5f9; }
+  </style>
+
+  <div class="section-heading">Newsroom Archive</div>
+  
+  <div class="posts-feed">
+    {sortedPosts.map((post) => {
+      const slug = post.file.split('/').pop().replace('.md', '');
+      const catLabel = categoryMap[post.frontmatter.category] || 'Courts & Crime';
+      const cleanDate = post.frontmatter.date ? String(post.frontmatter.date).split('T')[0] : 'Recent';
+      return (
+        <a href={`/posts/${slug}`} class="article-card">
+          <div>
+            <div class="article-meta">{catLabel} • {cleanDate}</div>
+            <div class="byline">Written by: Umbrellaman</div>
+            <h2 class="article-title">{post.frontmatter.title || slug.replace(/-/g, ' ')}</h2>
+            <p class="article-summary">{post.frontmatter.summary || 'Click to read reporting...'}</p>
+          </div>
+          {post.frontmatter.image && <img src={post.frontmatter.image} alt="" class="thumbnail" />}
+        </a>
+      );
+    })}
+  </div>
+</Layout>
