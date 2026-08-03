@@ -46,9 +46,11 @@ const { title, activeTab = '' } = Astro.props;
       
       .header-logo { position: absolute; left: 0; top: 0; height: 110px; width: auto; max-width: 220px; object-fit: contain; }
       
-      .header-contacts { position: absolute; right: 0; top: 10px; display: flex; flex-direction: column; align-items: flex-end; gap: 0.35rem; font-size: 0.82rem; font-weight: 600; }
+      .header-contacts { position: absolute; right: 0; top: 5px; display: flex; flex-direction: column; align-items: flex-end; gap: 0.25rem; font-size: 0.82rem; font-weight: 600; }
       .header-contacts a { color: var(--text-muted); text-decoration: none; display: flex; align-items: center; gap: 0.35rem; transition: color 0.15s ease; }
       .header-contacts a:hover { color: var(--brand-blue); }
+      
+      .tip-btn { color: var(--brand-blue) !important; font-weight: 700; text-transform: uppercase; font-size: 0.78rem; letter-spacing: 0.03em; }
 
       @media (max-width: 768px) { 
         .header-logo, .header-contacts { position: static; margin-bottom: 0.75rem; align-items: center; } 
@@ -65,7 +67,14 @@ const { title, activeTab = '' } = Astro.props;
       .container { max-width: 1100px; margin: 2.5rem auto; padding: 0 1.5rem; display: grid; grid-template-columns: 2fr 1fr; gap: 3rem; }
       @media (max-width: 768px) { .container { grid-template-columns: 1fr; } }
       
-      .sidebar-box { background: #ffffff; border: 1px solid var(--border-light); border-radius: 8px; padding: 1.5rem; margin-bottom: 2rem; }
+      .sidebar-box { background: #ffffff; border: 1px solid var(--border-light); border-radius: 8px; padding: 1.5rem; margin-bottom: 1.5rem; }
+      
+      /* Newsletter Styling */
+      .newsletter-box { background: #F8FAFC; border: 1px solid #CBD5E1; }
+      .newsletter-input { width: 100%; padding: 0.6rem 0.8rem; font-size: 0.85rem; border: 1px solid var(--border-light); border-radius: 6px; margin: 0.75rem 0 0.5rem; outline: none; }
+      .newsletter-input:focus { border-color: var(--brand-blue); }
+      .newsletter-btn { width: 100%; background: var(--brand-blue); color: #fff; font-weight: 700; font-size: 0.82rem; border: none; padding: 0.6rem; border-radius: 6px; cursor: pointer; text-transform: uppercase; }
+      .newsletter-btn:hover { background: #08529d; }
     </style>
   </head>
   <body>
@@ -80,9 +89,13 @@ const { title, activeTab = '' } = Astro.props;
 
     <header>
       <div class="header-wrap">
-        <a href="/"><img src="/logo.png" alt="The Joco Watch Logo" class="header-logo" onerror="this.style.display='none'" /></a>
+        <a href="/"><img src="/logo.png" alt="The JoCo Watch Logo" class="header-logo" onerror="this.style.display='none'" /></a>
         
+        <!-- Header Contacts: Tip Link directly on top -->
         <div class="header-contacts">
+          <a href="mailto:thejocowatch@gmail.com?subject=News%20Tip%20%2F%20Story%20Idea" class="tip-btn">
+            <span>Submit a Tip / Story Idea 📩</span>
+          </a>
           <a href="https://www.facebook.com/profile.php?id=61592711402958" target="_blank" rel="noopener">
             <span>Facebook Page ↗</span>
           </a>
@@ -111,9 +124,21 @@ const { title, activeTab = '' } = Astro.props;
       </main>
 
       <aside>
+        <!-- About Box -->
         <div class="sidebar-box">
-          <h3 style="font-size: 1rem; font-weight: 700; margin-bottom: 0.75rem;">About The Joco Watch</h3>
+          <h3 style="font-size: 1rem; font-weight: 700; margin-bottom: 0.75rem;">About The JoCo Watch</h3>
           <p style="font-size: 0.9rem; color: var(--text-muted);">We cover public safety and local stories across Johnson County. Not real-time breaking news—just clear, careful reporting.</p>
+        </div>
+
+        <!-- Subscriber Box -->
+        <div class="sidebar-box newsletter-box">
+          <h3 style="font-size: 0.95rem; font-weight: 700; color: var(--brand-dark);">Get Email Alerts</h3>
+          <p style="font-size: 0.82rem; color: var(--text-muted); margin-top: 0.25rem;">Receive an instant notification in your inbox whenever new reporting is published.</p>
+          
+          <form action="https://e3.e2ma.net/subscribers/subscribe" method="post" target="_blank" onsubmit="alert('Thank you for subscribing to The JoCo Watch alerts!');">
+            <input type="email" name="email" placeholder="Enter your email address..." required class="newsletter-input" />
+            <button type="submit" class="newsletter-btn">Subscribe Free</button>
+          </form>
         </div>
       </aside>
     </div>
