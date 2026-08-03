@@ -30,16 +30,13 @@ content:
             value: city-issues
           - label: Deep Dives
             value: deep-dives
-        default: public-safety
+        default: courts-crime
       - name: featured
-        label: Feature on Homepage Hero
+        label: Feature on Homepage
         type: boolean
         default: false
-      - name: feature_until
-        label: Feature Expiration Date (Optional)
-        type: date
       - name: image
-        label: Thumbnail / Featured Image
+        label: Featured Image
         type: image
       - name: summary
         label: Short Summary
