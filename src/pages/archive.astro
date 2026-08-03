@@ -3,7 +3,7 @@ import Layout from '../layouts/Layout.astro';
 
 const allPosts = await Astro.glob('../content/posts/*.md');
 
-// Sort newest to oldest
+// Archive ALWAYS includes ALL posts (active or auto-archived), sorted newest first
 const sortedPosts = allPosts.sort((a, b) => {
   return new Date(b.frontmatter.date).getTime() - new Date(a.frontmatter.date).getTime();
 });
@@ -40,7 +40,7 @@ const categoryMap = {
         <a href={`/posts/${slug}`} class="article-card">
           <div>
             <div class="article-meta">{catLabel} • {cleanDate}</div>
-            <div class="byline">Written by: Umbrellaman</div>
+            <div class="byline">Written by: Umbrelllaman</div>
             <h2 class="article-title">{post.frontmatter.title || slug.replace(/-/g, ' ')}</h2>
             <p class="article-summary">{post.frontmatter.summary || 'Click to read reporting...'}</p>
           </div>
