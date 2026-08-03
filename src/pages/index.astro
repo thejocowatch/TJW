@@ -2,7 +2,7 @@
 const allPosts = await Astro.glob('../content/posts/*.md');
 const now = new Date();
 
-// Filter Featured post (checks if featured is true and expiration hasn't passed)
+// Identify the Featured Post
 const featuredPost = allPosts.find(post => {
   if (!post.frontmatter.featured) return false;
   if (post.frontmatter.feature_until) {
@@ -10,9 +10,10 @@ const featuredPost = allPosts.find(post => {
     if (now > expireDate) return false;
   }
   return true;
-}) || allPosts[0]; // Falls back to newest post if none explicitly marked featured
+});
 
-const feedPosts = allPosts;
+// EXCLUDE featured article from the regular feed so it never duplicates
+const feedPosts = allPosts.filter(post => post !== featuredPost);
 
 const categoryMap = {
   'public-safety': 'Public Safety',
@@ -42,9 +43,9 @@ const categoryMap = {
       header { background: #ffffff; border-bottom: 2px solid var(--brand-dark); padding: 1.5rem 1.5rem 1rem; position: relative; }
       .header-wrap { max-width: 1100px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; position: relative; }
       
-      /* Logo position top-left of header */
-      .header-logo { position: absolute; left: 0; top: 0; height: 50px; width: auto; }
-      @media (max-width: 768px) { .header-logo { position: static; margin-bottom: 1rem; } }
+      /* Scaled up Header Logo */
+      .header-logo { position: absolute; left: 0; top: 0; height: 90px; width: auto; max-width: 180px; object-fit: contain; }
+      @media (max-width: 768px) { .header-logo { position: static; height: 75px; margin-bottom: 0.5rem; } }
 
       .brand-title { font-size: 2.75rem; font-weight: 800; color: var(--brand-dark); text-transform: uppercase; text-decoration: none; display: inline-block; }
       .brand-title span { color: var(--brand-blue); }
@@ -89,13 +90,11 @@ const categoryMap = {
 
     <header>
       <div class="header-wrap">
-        <!-- Top Left Logo -->
         <a href="/"><img src="/logo.png" alt="The JoCo Watch Logo" class="header-logo" onerror="this.style.display='none'" /></a>
         
         <a href="/" class="brand-title">THE JOCO <span>WATCH</span></a>
         <p class="tagline">Clear, careful reporting on public safety, crime, courts, and local government across Johnson County.</p>
 
-        <!-- Navigation with "All Articles" moved to end -->
         <nav class="nav-categories">
           <a href="/" class="active">Featured</a>
           <a href="/public-safety">Public Safety</a>
@@ -122,7 +121,8 @@ const categoryMap = {
           </div>
         )}
 
-        <div class="section-heading">Latest Reporting</div>
+        {feedPosts.length > 0 && <div class="section-heading">Latest Reporting</div>}
+        
         <div class="posts-feed">
           {feedPosts.map((post) => {
             const slug = post.file.split('/').pop().replace('.md', '');
