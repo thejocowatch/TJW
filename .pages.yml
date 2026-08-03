@@ -26,6 +26,12 @@ content:
         label: Feature on Homepage
         type: boolean
         default: false
+      - name: feature_until
+        label: Feature Expiration Date (Optional)
+        type: date
+      - name: archive_after
+        label: Auto-Archive Date (Removes from categories/home, moves purely to Archive)
+        type: date
       - name: image
         label: Featured Image
         type: image
