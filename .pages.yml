@@ -7,7 +7,8 @@ content:
     label: News Articles
     type: collection
     path: src/content/posts
-    format: md
+    filename: "{year}-{month}-{day}-{primary}.md"
+    format: yaml-frontmatter
     fields:
       - name: title
         label: Article Title
@@ -17,9 +18,6 @@ content:
         label: Publish Date
         type: date
         required: true
-      - name: image
-        label: Featured Image
-        type: image
       - name: summary
         label: Short Summary
         type: string
