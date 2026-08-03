@@ -20,10 +20,26 @@ content:
         required: true
       - name: category
         label: Category
-        type: string
-        default: Public Safety
+        type: select
+        options:
+          - label: Public Safety
+            value: public-safety
+          - label: Courts & Crime
+            value: courts-crime
+          - label: City Issues
+            value: city-issues
+          - label: Deep Dives
+            value: deep-dives
+        default: public-safety
+      - name: featured
+        label: Feature on Homepage Hero
+        type: boolean
+        default: false
+      - name: feature_until
+        label: Feature Expiration Date (Optional)
+        type: date
       - name: image
-        label: Featured Image
+        label: Thumbnail / Featured Image
         type: image
       - name: summary
         label: Short Summary
