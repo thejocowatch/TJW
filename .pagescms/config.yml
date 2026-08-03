@@ -1,0 +1,15 @@
+media:
+  input: public/blog-images
+  output: /blog-images
+
+content:
+  - label: "Articles"
+    type: collection
+    path: "src/content/blog"
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    fields:
+      - { name: "title", label: "Headline", type: "string", required: true }
+      - { name: "description", label: "Short Subtitle/Summary", type: "string" }
+      - { name: "pubDate", label: "Publish Date", type: "date", required: true }
+      - { name: "heroImage", label: "Cover Photo", type: "image" }
+      - { name: "body", label: "Article Content", type: "rich-text", required: true }
