@@ -21,11 +21,7 @@ const posts = await Astro.glob('../content/posts/*.md');
         --text-muted: #64748B;
       }
 
-      * {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-      }
+      * { box-sizing: border-box; margin: 0; padding: 0; }
 
       body {
         font-family: 'Inter', -apple-system, sans-serif;
@@ -91,11 +87,7 @@ const posts = await Astro.glob('../content/posts/*.md');
         letter-spacing: 0.05em;
       }
 
-      .nav-categories a {
-        color: var(--text-main);
-        text-decoration: none;
-      }
-
+      .nav-categories a { color: var(--text-main); text-decoration: none; }
       .nav-categories a:hover { color: var(--brand-blue); }
 
       .container {
@@ -125,31 +117,39 @@ const posts = await Astro.glob('../content/posts/*.md');
       .posts-feed {
         display: flex;
         flex-direction: column;
-        gap: 2rem;
+        gap: 1.5rem;
       }
 
+      /* Compact Newsroom Card */
       .article-card {
         background: #ffffff;
         border: 1px solid var(--border-light);
         border-radius: 8px;
-        padding: 1.75rem;
+        padding: 1.25rem 1.5rem;
         transition: box-shadow 0.2s ease, border-color 0.2s ease;
         text-decoration: none;
         color: inherit;
-        display: block;
+        display: grid;
+        grid-template-columns: 1fr 140px;
+        gap: 1.5rem;
+        align-items: center;
+      }
+
+      @media (max-width: 500px) {
+        .article-card { grid-template-columns: 1fr; }
       }
 
       .article-card:hover {
         border-color: var(--brand-blue);
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
       }
 
       .article-meta {
-        font-size: 0.8rem;
-        font-weight: 600;
+        font-size: 0.75rem;
+        font-weight: 700;
         color: var(--brand-blue);
         text-transform: uppercase;
-        margin-bottom: 0.5rem;
+        margin-bottom: 0.35rem;
         display: flex;
         gap: 0.5rem;
       }
@@ -158,23 +158,30 @@ const posts = await Astro.glob('../content/posts/*.md');
 
       .article-title {
         font-family: 'Newsreader', serif;
-        font-size: 1.8rem;
+        font-size: 1.4rem;
         font-weight: 600;
         line-height: 1.25;
         color: var(--brand-dark);
-        margin-bottom: 0.75rem;
+        margin-bottom: 0.4rem;
       }
 
       .article-summary {
-        font-size: 0.95rem;
-        color: var(--text-main);
-        line-height: 1.6;
+        font-size: 0.88rem;
+        color: var(--text-muted);
+        line-height: 1.4;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
       }
 
-      .article-body-preview {
-        margin-top: 0.5rem;
-        font-size: 0.95rem;
-        color: #334155;
+      .thumbnail {
+        width: 140px;
+        height: 100px;
+        object-fit: cover;
+        border-radius: 6px;
+        border: 1px solid var(--border-light);
+        background-color: #f1f5f9;
       }
 
       .sidebar-box {
@@ -239,20 +246,23 @@ const posts = await Astro.glob('../content/posts/*.md');
           <p style="color: var(--text-muted);">No reporting published yet.</p>
         ) : (
           <div class="posts-feed">
-            {posts.map((post) => (
-              <a href={post.url} class="article-card">
-                <div class="article-meta">
-                  PUBLIC SAFETY <span>• {post.frontmatter.date || 'Recent'}</span>
-                </div>
-                <h2 class="article-title">{post.frontmatter.title || 'Untitled Article'}</h2>
-                <p class="article-summary">{post.frontmatter.summary}</p>
-                {!post.frontmatter.summary && (
-                  <div class="article-body-preview">
-                    <post.Content />
+            {posts.map((post) => {
+              const slug = post.file.split('/').pop().replace('.md', '');
+              return (
+                <a href={`/posts/${slug}`} class="article-card">
+                  <div>
+                    <div class="article-meta">
+                      {post.frontmatter.category || 'PUBLIC SAFETY'} <span>• {post.frontmatter.date || 'Recent'}</span>
+                    </div>
+                    <h2 class="article-title">{post.frontmatter.title || 'Untitled Article'}</h2>
+                    <p class="article-summary">{post.frontmatter.summary || 'Click to read full reporting...'}</p>
                   </div>
-                )}
-              </a>
-            ))}
+                  {post.frontmatter.image && (
+                    <img src={post.frontmatter.image} alt={post.frontmatter.title} class="thumbnail" />
+                  )}
+                </a>
+              );
+            })}
           </div>
         )}
       </main>
