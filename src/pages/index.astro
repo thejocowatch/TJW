@@ -4,10 +4,11 @@ import Layout from '../layouts/Layout.astro';
 const allPosts = await Astro.glob('../content/posts/*.md');
 const now = new Date();
 
-// STRICT FEATURED CHECK: Only match if explicitly true
+// STRICT BOOLEAN PARSING:
 const featuredPost = allPosts.find(post => {
-  const isFeatured = post.frontmatter.featured === true || String(post.frontmatter.featured).toLowerCase() === 'true';
-  if (!isFeatured) return false;
+  const val = post.frontmatter.featured;
+  const isTrue = val === true || val === 'true' || val === 'True';
+  if (!isTrue) return false;
 
   if (post.frontmatter.feature_until) {
     const expireDate = new Date(post.frontmatter.feature_until);
@@ -16,7 +17,7 @@ const featuredPost = allPosts.find(post => {
   return true;
 });
 
-// Exclude featured post from the feed below if present
+// Non-featured posts go into regular feed
 const feedPosts = allPosts.filter(post => post !== featuredPost);
 
 const categoryMap = {
