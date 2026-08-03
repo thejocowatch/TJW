@@ -55,7 +55,7 @@ const featuredPosts = allPosts.filter(post => {
         <a href={`/posts/${slug}`} class="featured-card">
           <span class="featured-badge">FEATURED REPORT</span>
           <h2 class="featured-title">{post.frontmatter.title}</h2>
-          <div class="featured-byline">Written by: Umbrelllaman • {cleanDate}</div>
+          <div class="featured-byline">Written by: Eric Collins • {cleanDate}</div>
           {post.frontmatter.image && <img src={post.frontmatter.image} class="featured-img" alt="" />}
           <p style="color: var(--text-muted);">{post.frontmatter.summary}</p>
         </a>
