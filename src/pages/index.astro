@@ -34,7 +34,6 @@ const posts = await Astro.glob('../content/posts/*.md');
         line-height: 1.6;
       }
 
-      /* Top Utility Bar */
       .top-bar {
         background: #fff;
         border-bottom: 1px solid var(--border-light);
@@ -51,7 +50,6 @@ const posts = await Astro.glob('../content/posts/*.md');
         align-items: center;
       }
 
-      /* Header / Masthead */
       header {
         background: #ffffff;
         border-bottom: 2px solid var(--brand-dark);
@@ -59,24 +57,18 @@ const posts = await Astro.glob('../content/posts/*.md');
         text-align: center;
       }
 
-      .masthead {
-        max-width: 1100px;
-        margin: 0 auto;
-      }
-
       .brand-title {
-        font-family: 'Inter', sans-serif;
         font-size: 2.75rem;
         font-weight: 800;
         letter-spacing: -0.04em;
         color: var(--brand-dark);
         text-transform: uppercase;
         margin-bottom: 0.5rem;
+        text-decoration: none;
+        display: inline-block;
       }
 
-      .brand-title span {
-        color: var(--brand-blue);
-      }
+      .brand-title span { color: var(--brand-blue); }
 
       .tagline {
         font-family: 'Newsreader', serif;
@@ -87,7 +79,6 @@ const posts = await Astro.glob('../content/posts/*.md');
         margin: 0 auto 1.5rem;
       }
 
-      /* Category Nav */
       .nav-categories {
         display: flex;
         justify-content: center;
@@ -105,11 +96,8 @@ const posts = await Astro.glob('../content/posts/*.md');
         text-decoration: none;
       }
 
-      .nav-categories a:hover {
-        color: var(--brand-blue);
-      }
+      .nav-categories a:hover { color: var(--brand-blue); }
 
-      /* Layout Grid */
       .container {
         max-width: 1100px;
         margin: 2.5rem auto;
@@ -120,12 +108,9 @@ const posts = await Astro.glob('../content/posts/*.md');
       }
 
       @media (max-width: 768px) {
-        .container {
-          grid-template-columns: 1fr;
-        }
+        .container { grid-template-columns: 1fr; }
       }
 
-      /* Featured & Post Cards */
       .section-heading {
         font-size: 0.85rem;
         font-weight: 800;
@@ -149,6 +134,9 @@ const posts = await Astro.glob('../content/posts/*.md');
         border-radius: 8px;
         padding: 1.75rem;
         transition: box-shadow 0.2s ease, border-color 0.2s ease;
+        text-decoration: none;
+        color: inherit;
+        display: block;
       }
 
       .article-card:hover {
@@ -166,10 +154,7 @@ const posts = await Astro.glob('../content/posts/*.md');
         gap: 0.5rem;
       }
 
-      .article-meta span {
-        color: var(--text-muted);
-        font-weight: 400;
-      }
+      .article-meta span { color: var(--text-muted); font-weight: 400; }
 
       .article-title {
         font-family: 'Newsreader', serif;
@@ -186,7 +171,6 @@ const posts = await Astro.glob('../content/posts/*.md');
         line-height: 1.6;
       }
 
-      /* Sidebar */
       .sidebar-box {
         background: #ffffff;
         border: 1px solid var(--border-light);
@@ -210,7 +194,6 @@ const posts = await Astro.glob('../content/posts/*.md');
       }
 
       .contact-email {
-        display: inline-block;
         font-weight: 600;
         color: var(--brand-blue);
         text-decoration: none;
@@ -220,7 +203,6 @@ const posts = await Astro.glob('../content/posts/*.md');
   </head>
   <body>
 
-    <!-- Utility Bar -->
     <div class="top-bar">
       <div class="top-bar-container">
         <span>Johnson County, Kansas</span>
@@ -228,13 +210,13 @@ const posts = await Astro.glob('../content/posts/*.md');
       </div>
     </div>
 
-    <!-- Header Masthead -->
     <header>
       <div class="masthead">
-        <h1 class="brand-title">THE JOCO <span>WATCH</span></h1>
+        <a href="/" class="brand-title">THE JOCO <span>WATCH</span></a>
         <p class="tagline">Clear, careful reporting on public safety, crime, courts, and local government across Johnson County.</p>
         
         <nav class="nav-categories">
+          <a href="/">All Articles</a>
           <a href="#">Public Safety</a>
           <a href="#">Courts & Crime</a>
           <a href="#">City Issues</a>
@@ -243,10 +225,7 @@ const posts = await Astro.glob('../content/posts/*.md');
       </div>
     </header>
 
-    <!-- Main Content Layout -->
     <div class="container">
-      
-      <!-- News Feed Column -->
       <main>
         <div class="section-heading">Latest Reporting</div>
 
@@ -255,19 +234,18 @@ const posts = await Astro.glob('../content/posts/*.md');
         ) : (
           <div class="posts-feed">
             {posts.map((post) => (
-              <article class="article-card">
+              <a href={post.url} class="article-card">
                 <div class="article-meta">
                   PUBLIC SAFETY <span>• {post.frontmatter.date || 'Recent'}</span>
                 </div>
                 <h2 class="article-title">{post.frontmatter.title}</h2>
                 <p class="article-summary">{post.frontmatter.summary}</p>
-              </article>
+              </a>
             ))}
           </div>
         )}
       </main>
 
-      <!-- Sidebar Column -->
       <aside>
         <div class="sidebar-box">
           <h3 class="sidebar-title">About The JoCo Watch</h3>
@@ -284,7 +262,6 @@ const posts = await Astro.glob('../content/posts/*.md');
           <a href="mailto:thejocowatch@gmail.com" class="contact-email">thejocowatch@gmail.com →</a>
         </div>
       </aside>
-
     </div>
 
   </body>
