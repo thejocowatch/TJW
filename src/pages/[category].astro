@@ -8,6 +8,7 @@ export async function getStaticPaths() {
 
 const { category } = Astro.params;
 const allPosts = await Astro.glob('../content/posts/*.md');
+const now = new Date();
 
 const categoryLabels = {
   'public-safety': 'Public Safety',
@@ -18,7 +19,14 @@ const categoryLabels = {
 
 const categoryPosts = allPosts.filter(post => {
   const postCategory = post.frontmatter.category || 'public-safety';
-  return postCategory === category;
+  if (postCategory !== category) return false;
+
+  // Auto-archive filter: if archive_after date passed, remove from category tab
+  if (post.frontmatter.archive_after) {
+    const archiveDate = new Date(post.frontmatter.archive_after);
+    if (now > archiveDate) return false;
+  }
+  return true;
 });
 ---
 
@@ -38,7 +46,7 @@ const categoryPosts = allPosts.filter(post => {
   <div class="section-heading">{categoryLabels[category]}</div>
   
   {categoryPosts.length === 0 ? (
-    <p style="color: var(--text-muted);">No reporting published in this section yet.</p>
+    <p style="color: var(--text-muted);">No active reporting published in this section yet.</p>
   ) : (
     <div class="posts-feed">
       {categoryPosts.map((post) => {
@@ -48,7 +56,7 @@ const categoryPosts = allPosts.filter(post => {
           <a href={`/posts/${slug}`} class="article-card">
             <div>
               <div class="article-meta">{categoryLabels[category]} • {cleanDate}</div>
-              <div class="byline">Written by: Umbrellaman</div>
+              <div class="byline">Written by: Umbrelllaman</div>
               <h2 class="article-title">{post.frontmatter.title || slug.replace(/-/g, ' ')}</h2>
               <p class="article-summary">{post.frontmatter.summary || 'Click to read reporting...'}</p>
             </div>
