@@ -12,6 +12,11 @@ const { title, activeTab = '' } = Astro.props;
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{title}</title>
+    
+    <!-- Favicon Links -->
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="shortcut icon" href="/favicon.png" />
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -22,7 +27,7 @@ const { title, activeTab = '' } = Astro.props;
       body { font-family: 'Inter', -apple-system, sans-serif; background-color: var(--bg-body); color: var(--text-main); line-height: 1.6; }
       
       .top-bar { background: #fff; border-bottom: 1px solid var(--border-light); padding: 0.5rem 1.5rem; font-size: 0.8rem; color: var(--text-muted); }
-      .top-bar-container { max-width: 1100px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+      .top-bar-container { max-width: 1100px; margin: 0 auto; display: flex; justify-between: space-between; align-items: center; }
 
       .weather-bug {
         background: rgba(15, 23, 42, 0.04);
@@ -39,10 +44,8 @@ const { title, activeTab = '' } = Astro.props;
       header { background: #ffffff; border-bottom: 2px solid var(--brand-dark); padding: 1.5rem 1.5rem 1rem; position: relative; }
       .header-wrap { max-width: 1100px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; position: relative; }
       
-      /* Bigger Logo on Top-Left */
       .header-logo { position: absolute; left: 0; top: 0; height: 110px; width: auto; max-width: 220px; object-fit: contain; }
       
-      /* Header Right Side Contact Links */
       .header-contacts { position: absolute; right: 0; top: 10px; display: flex; flex-direction: column; align-items: flex-end; gap: 0.35rem; font-size: 0.82rem; font-weight: 600; }
       .header-contacts a { color: var(--text-muted); text-decoration: none; display: flex; align-items: center; gap: 0.35rem; transition: color 0.15s ease; }
       .header-contacts a:hover { color: var(--brand-blue); }
@@ -77,12 +80,11 @@ const { title, activeTab = '' } = Astro.props;
 
     <header>
       <div class="header-wrap">
-        <!-- Bigger Logo -->
-        <a href="/"><img src="/logo.png" alt="The JoCo Watch Logo" class="header-logo" onerror="this.style.display='none'" /></a>
+        <a href="/"><img src="/logo.png" alt="The Joco Watch Logo" class="header-logo" onerror="this.style.display='none'" /></a>
         
-        <!-- Header Right-Side Contact Links -->
+        <!-- Header Contacts with Embedded Facebook Link -->
         <div class="header-contacts">
-          <a href="https://facebook.com" target="_blank" rel="noopener">
+          <a href="https://www.facebook.com/profile.php?id=61563212871714" target="_blank" rel="noopener">
             <span>Facebook Page ↗</span>
           </a>
           <a href="mailto:thejocowatch@gmail.com">
@@ -111,7 +113,7 @@ const { title, activeTab = '' } = Astro.props;
 
       <aside>
         <div class="sidebar-box">
-          <h3 style="font-size: 1rem; font-weight: 700; margin-bottom: 0.75rem;">About The JoCo Watch</h3>
+          <h3 style="font-size: 1rem; font-weight: 700; margin-bottom: 0.75rem;">About The Joco Watch</h3>
           <p style="font-size: 0.9rem; color: var(--text-muted);">We cover public safety and local stories across Johnson County. Not real-time breaking news—just clear, careful reporting.</p>
         </div>
       </aside>
