@@ -1,7 +1,5 @@
 ---
-import { getCollection } from 'astro:content';
-
-const posts = await getCollection('posts');
+const posts = await Astro.glob('../content/posts/*.md');
 ---
 
 <html lang="en">
@@ -61,10 +59,9 @@ const posts = await getCollection('posts');
       ) : (
         posts.map((post) => (
           <article class="post-card">
-            <div class="post-date">{post.data.date?.toISOString().split('T')[0]}</div>
-            <h2 class="post-title">{post.data.title}</h2>
-            <p class="post-summary">{post.data.summary}</p>
-            <div>{post.body}</div>
+            <div class="post-date">{post.frontmatter.date}</div>
+            <h2 class="post-title">{post.frontmatter.title}</h2>
+            <p class="post-summary">{post.frontmatter.summary}</p>
           </article>
         ))
       )}
