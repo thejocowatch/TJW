@@ -17,6 +17,9 @@ content:
         label: Publish Date
         type: date
         required: true
+      - name: image
+        label: Featured Image
+        type: image
       - name: summary
         label: Short Summary
         type: string
