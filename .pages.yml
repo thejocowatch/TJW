@@ -1,0 +1,25 @@
+media:
+  input: public/images
+  output: /images
+
+content:
+  - name: posts
+    label: News Articles
+    type: collection
+    path: src/content/posts
+    format: md
+    fields:
+      - name: title
+        label: Article Title
+        type: string
+        required: true
+      - name: date
+        label: Publish Date
+        type: date
+        required: true
+      - name: summary
+        label: Short Summary
+        type: string
+      - name: body
+        label: Article Body
+        type: rich-text
