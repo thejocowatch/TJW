@@ -2,9 +2,12 @@
 const allPosts = await Astro.glob('../content/posts/*.md');
 const now = new Date();
 
-// STRICT FEATURED LOGIC: Only pull posts that explicitly have `featured: true`
+// Strict featured check (handles booleans true/false and string "true"/"false")
 const featuredPost = allPosts.find(post => {
-  if (post.frontmatter.featured !== true) return false;
+  const isFeatured = post.frontmatter.featured === true || String(post.frontmatter.featured).toLowerCase() === 'true';
+  if (!isFeatured) return false;
+
+  // Check if expiration date passed
   if (post.frontmatter.feature_until) {
     const expireDate = new Date(post.frontmatter.feature_until);
     if (now > expireDate) return false;
@@ -12,7 +15,7 @@ const featuredPost = allPosts.find(post => {
   return true;
 });
 
-// All non-featured posts go into the regular feed below
+// Non-featured posts go into the regular feed below
 const feedPosts = allPosts.filter(post => post !== featuredPost);
 
 const categoryMap = {
@@ -39,6 +42,22 @@ const categoryMap = {
       
       .top-bar { background: #fff; border-bottom: 1px solid var(--border-light); padding: 0.5rem 1.5rem; font-size: 0.8rem; color: var(--text-muted); }
       .top-bar-container { max-width: 1100px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+
+      /* Translucent Weather Bug Styling */
+      .weather-bug {
+        background: rgba(15, 23, 42, 0.05);
+        border: 1px solid rgba(226, 232, 240, 0.9);
+        border-radius: 20px;
+        padding: 0.2rem 0.75rem;
+        font-size: 0.78rem;
+        font-weight: 600;
+        color: #475569;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        backdrop-filter: blur(4px);
+      }
+      .weather-dot { width: 7px; height: 7px; background-color: #3b82f6; border-radius: 50%; display: inline-block; }
 
       header { background: #ffffff; border-bottom: 2px solid var(--brand-dark); padding: 1.5rem 1.5rem 1rem; position: relative; }
       .header-wrap { max-width: 1100px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; position: relative; }
@@ -82,8 +101,12 @@ const categoryMap = {
   <body>
     <div class="top-bar">
       <div class="top-bar-container">
-        <span>Johnson County, Kansas</span>
-        <span>Independent Community Newsroom</span>
+        <span>Johnson County, Kansas • Independent Newsroom</span>
+        <!-- Translucent Temp Bug -->
+        <div id="weather-bug" class="weather-bug">
+          <span class="weather-dot"></span>
+          <span id="weather-temp">JoCo --°F</span>
+        </div>
       </div>
     </div>
 
@@ -107,7 +130,7 @@ const categoryMap = {
 
     <div class="container">
       <main>
-        {featuredPost && (
+        {featuredPost ? (
           <div>
             <div class="section-heading">Featured Story</div>
             <a href={`/posts/${featuredPost.file.split('/').pop().replace('.md', '')}`} class="featured-card">
@@ -118,7 +141,7 @@ const categoryMap = {
               <p style="color: var(--text-muted);">{featuredPost.frontmatter.summary}</p>
             </a>
           </div>
-        )}
+        ) : null}
 
         <div class="section-heading">Latest Reporting</div>
         
@@ -148,5 +171,23 @@ const categoryMap = {
         </div>
       </aside>
     </div>
+
+    <!-- Client Script to fetch Johnson County Live Temp -->
+    <script>
+      async function fetchJoCoTemp() {
+        try {
+          const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=38.98&longitude=-94.67&current_weather=true&temperature_unit=fahrenheit');
+          const data = await res.json();
+          if (data && data.current_weather) {
+            const temp = Math.round(data.current_weather.temperature);
+            const el = document.getElementById('weather-temp');
+            if (el) el.textContent = `JoCo ${temp}°F`;
+          }
+        } catch (e) {
+          console.error('Weather fetch error', e);
+        }
+      }
+      fetchJoCoTemp();
+    </script>
   </body>
 </html>
