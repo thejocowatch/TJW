@@ -2,7 +2,9 @@
 title: Prairie Village Woman Pleads Guilty to $95K Social Security Fraud
 date: 2026-08-02
 category: courts-crime
-featured: false
+featured: true
+feature_until: 2026-08-04
+archive_after: 2026-08-05
 image: /images/GloriaBurggraf-4.png
 summary: A 70-year-old Prairie Village woman faces up to 10 years in federal
   prison after collecting her deceased husband's benefits for four years.
