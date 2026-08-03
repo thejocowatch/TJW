@@ -171,6 +171,12 @@ const posts = await Astro.glob('../content/posts/*.md');
         line-height: 1.6;
       }
 
+      .article-body-preview {
+        margin-top: 0.5rem;
+        font-size: 0.95rem;
+        color: #334155;
+      }
+
       .sidebar-box {
         background: #ffffff;
         border: 1px solid var(--border-light);
@@ -238,8 +244,13 @@ const posts = await Astro.glob('../content/posts/*.md');
                 <div class="article-meta">
                   PUBLIC SAFETY <span>• {post.frontmatter.date || 'Recent'}</span>
                 </div>
-                <h2 class="article-title">{post.frontmatter.title}</h2>
+                <h2 class="article-title">{post.frontmatter.title || 'Untitled Article'}</h2>
                 <p class="article-summary">{post.frontmatter.summary}</p>
+                {!post.frontmatter.summary && (
+                  <div class="article-body-preview">
+                    <post.Content />
+                  </div>
+                )}
               </a>
             ))}
           </div>
