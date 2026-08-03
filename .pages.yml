@@ -20,12 +20,7 @@ content:
         required: true
       - name: category
         label: Category
-        type: select
-        options:
-          - public-safety
-          - courts-crime
-          - city-issues
-          - deep-dives
+        type: string
         default: courts-crime
       - name: featured
         label: Feature on Homepage
