@@ -17,6 +17,8 @@ jobs:
         uses: actions/checkout@v4
       - name: Deploy with Astro Action
         uses: withastro/action@v2
+        with:
+          package-manager: npm
 
   deploy:
     needs: build
