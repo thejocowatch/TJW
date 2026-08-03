@@ -6,21 +6,19 @@ const posts = await Astro.glob('../content/posts/*.md');
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>The JoCo Watch | Johnson County News</title>
+    <title>The JoCo Watch | Independent Johnson County Newsroom</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
     <style>
       :root {
-        --bg-main: #0a0c10;
-        --bg-card: #12161f;
-        --bg-card-hover: #1a202c;
-        --border-color: #232a3b;
-        --accent: #38bdf8;
-        --accent-glow: rgba(56, 189, 248, 0.15);
-        --text-primary: #f3f4f6;
-        --text-secondary: #9ca3af;
+        --brand-blue: #0A66C2;
+        --brand-dark: #0F172A;
+        --bg-body: #FAFAFA;
+        --border-light: #E2E8F0;
+        --text-main: #1E293B;
+        --text-muted: #64748B;
       }
 
       * {
@@ -31,217 +29,263 @@ const posts = await Astro.glob('../content/posts/*.md');
 
       body {
         font-family: 'Inter', -apple-system, sans-serif;
-        background-color: var(--bg-main);
-        color: var(--text-primary);
-        line-height: 1.5;
-        min-height: 100vh;
+        background-color: var(--bg-body);
+        color: var(--text-main);
+        line-height: 1.6;
       }
 
-      /* Sleek Top Nav */
-      nav {
-        border-bottom: 1px solid var(--border-color);
-        background: rgba(10, 12, 16, 0.8);
-        backdrop-filter: blur(12px);
-        position: sticky;
-        top: 0;
-        z-index: 50;
+      /* Top Utility Bar */
+      .top-bar {
+        background: #fff;
+        border-bottom: 1px solid var(--border-light);
+        padding: 0.5rem 1.5rem;
+        font-size: 0.8rem;
+        color: var(--text-muted);
       }
 
-      .nav-container {
-        max-width: 1200px;
+      .top-bar-container {
+        max-width: 1100px;
         margin: 0 auto;
-        padding: 1rem 1.5rem;
         display: flex;
         justify-content: space-between;
         align-items: center;
       }
 
-      .logo {
-        font-weight: 900;
-        font-size: 1.5rem;
-        letter-spacing: -0.05em;
-        text-transform: uppercase;
-        color: #fff;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
+      /* Header / Masthead */
+      header {
+        background: #ffffff;
+        border-bottom: 2px solid var(--brand-dark);
+        padding: 2.5rem 1.5rem 1.5rem;
+        text-align: center;
       }
 
-      .logo span {
-        color: var(--accent);
-      }
-
-      .badge-live {
-        background: rgba(239, 68, 68, 0.2);
-        color: #ef4444;
-        border: 1px solid rgba(239, 68, 68, 0.4);
-        padding: 0.25rem 0.6rem;
-        border-radius: 9999px;
-        font-size: 0.75rem;
-        font-weight: 700;
-        letter-spacing: 0.05em;
-        text-transform: uppercase;
-      }
-
-      /* Hero Section */
-      .hero {
-        max-width: 1200px;
+      .masthead {
+        max-width: 1100px;
         margin: 0 auto;
-        padding: 3rem 1.5rem 2rem;
       }
 
-      .hero h1 {
-        font-size: 3rem;
-        font-weight: 900;
-        letter-spacing: -0.03em;
+      .brand-title {
+        font-family: 'Inter', sans-serif;
+        font-size: 2.75rem;
+        font-weight: 800;
+        letter-spacing: -0.04em;
+        color: var(--brand-dark);
+        text-transform: uppercase;
         margin-bottom: 0.5rem;
-        background: linear-gradient(to right, #ffffff, #94a3b8);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
       }
 
-      .hero p {
-        color: var(--text-secondary);
-        font-size: 1.125rem;
-        max-width: 600px;
+      .brand-title span {
+        color: var(--brand-blue);
       }
 
-      /* Main News Grid */
-      .main-container {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 1rem 1.5rem 4rem;
+      .tagline {
+        font-family: 'Newsreader', serif;
+        font-size: 1.15rem;
+        font-style: italic;
+        color: var(--text-muted);
+        max-width: 650px;
+        margin: 0 auto 1.5rem;
       }
 
-      .news-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-        gap: 1.5rem;
-      }
-
-      .card {
-        background: var(--bg-card);
-        border: 1px solid var(--border-color);
-        border-radius: 12px;
-        overflow: hidden;
-        transition: all 0.2s ease-in-out;
+      /* Category Nav */
+      .nav-categories {
         display: flex;
-        flex-direction: column;
-        text-decoration: none;
-        color: inherit;
-      }
-
-      .card:hover {
-        transform: translateY(-4px);
-        border-color: var(--accent);
-        box-shadow: 0 10px 30px var(--accent-glow);
-        background: var(--bg-card-hover);
-      }
-
-      .card-image-placeholder {
-        width: 100%;
-        height: 180px;
-        background: linear-gradient(135deg, #1e293b, #0f172a);
-        display: flex;
-        align-items: center;
         justify-content: center;
-        border-bottom: 1px solid var(--border-color);
-      }
-
-      .card-content {
-        padding: 1.5rem;
-        display: flex;
-        flex-direction: column;
-        flex-grow: 1;
-      }
-
-      .card-meta {
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-        margin-bottom: 0.75rem;
-        font-size: 0.8rem;
-        color: var(--text-secondary);
-      }
-
-      .category-tag {
-        color: var(--accent);
+        gap: 2rem;
+        border-top: 1px solid var(--border-light);
+        padding-top: 1rem;
+        font-size: 0.85rem;
         font-weight: 600;
         text-transform: uppercase;
         letter-spacing: 0.05em;
       }
 
-      .card-title {
-        font-size: 1.25rem;
-        font-weight: 700;
-        line-height: 1.3;
+      .nav-categories a {
+        color: var(--text-main);
+        text-decoration: none;
+      }
+
+      .nav-categories a:hover {
+        color: var(--brand-blue);
+      }
+
+      /* Layout Grid */
+      .container {
+        max-width: 1100px;
+        margin: 2.5rem auto;
+        padding: 0 1.5rem;
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 3rem;
+      }
+
+      @media (max-width: 768px) {
+        .container {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      /* Featured & Post Cards */
+      .section-heading {
+        font-size: 0.85rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--brand-blue);
+        border-bottom: 2px solid var(--brand-blue);
+        padding-bottom: 0.4rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .posts-feed {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+      }
+
+      .article-card {
+        background: #ffffff;
+        border: 1px solid var(--border-light);
+        border-radius: 8px;
+        padding: 1.75rem;
+        transition: box-shadow 0.2s ease, border-color 0.2s ease;
+      }
+
+      .article-card:hover {
+        border-color: var(--brand-blue);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+      }
+
+      .article-meta {
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: var(--brand-blue);
+        text-transform: uppercase;
+        margin-bottom: 0.5rem;
+        display: flex;
+        gap: 0.5rem;
+      }
+
+      .article-meta span {
+        color: var(--text-muted);
+        font-weight: 400;
+      }
+
+      .article-title {
+        font-family: 'Newsreader', serif;
+        font-size: 1.8rem;
+        font-weight: 600;
+        line-height: 1.25;
+        color: var(--brand-dark);
         margin-bottom: 0.75rem;
-        color: #fff;
       }
 
-      .card-summary {
-        color: var(--text-secondary);
+      .article-summary {
         font-size: 0.95rem;
-        line-height: 1.5;
-        flex-grow: 1;
+        color: var(--text-main);
+        line-height: 1.6;
       }
 
-      .empty-state {
-        text-align: center;
-        padding: 4rem 2rem;
-        background: var(--bg-card);
-        border: 1px dashed var(--border-color);
-        border-radius: 12px;
-        color: var(--text-secondary);
+      /* Sidebar */
+      .sidebar-box {
+        background: #ffffff;
+        border: 1px solid var(--border-light);
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+      }
+
+      .sidebar-title {
+        font-size: 1rem;
+        font-weight: 700;
+        color: var(--brand-dark);
+        margin-bottom: 0.75rem;
+      }
+
+      .sidebar-text {
+        font-size: 0.9rem;
+        color: var(--text-muted);
+        line-height: 1.5;
+        margin-bottom: 1rem;
+      }
+
+      .contact-email {
+        display: inline-block;
+        font-weight: 600;
+        color: var(--brand-blue);
+        text-decoration: none;
+        font-size: 0.9rem;
       }
     </style>
   </head>
   <body>
 
-    <!-- Top Navigation -->
-    <nav>
-      <div class="nav-container">
-        <div class="logo">THE JOCO <span>WATCH</span></div>
-        <div class="badge-live">● LIVE UPDATES</div>
+    <!-- Utility Bar -->
+    <div class="top-bar">
+      <div class="top-bar-container">
+        <span>Johnson County, Kansas</span>
+        <span>Independent Community Newsroom</span>
       </div>
-    </nav>
+    </div>
 
-    <!-- Main Header -->
-    <section class="hero">
-      <h1>Johnson County Coverage</h1>
-      <p>Breaking local news, community updates, and investigative reporting across JoCo.</p>
-    </section>
+    <!-- Header Masthead -->
+    <header>
+      <div class="masthead">
+        <h1 class="brand-title">THE JOCO <span>WATCH</span></h1>
+        <p class="tagline">Clear, careful reporting on public safety, crime, courts, and local government across Johnson County.</p>
+        
+        <nav class="nav-categories">
+          <a href="#">Public Safety</a>
+          <a href="#">Courts & Crime</a>
+          <a href="#">City Issues</a>
+          <a href="#">Deep Dives</a>
+        </nav>
+      </div>
+    </header>
 
-    <!-- News Articles Grid -->
-    <main class="main-container">
-      {posts.length === 0 ? (
-        <div class="empty-state">
-          <h2>No articles published yet</h2>
-          <p>Check back shortly for breaking local updates.</p>
-        </div>
-      ) : (
-        <div class="news-grid">
-          {posts.map((post) => (
-            <article class="card">
-              <div class="card-image-placeholder">
-                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="1.5">
-                  <path d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
-                </svg>
-              </div>
-              <div class="card-content">
-                <div class="card-meta">
-                  <span class="category-tag">NEWS</span>
-                  <span>•</span>
-                  <span>{post.frontmatter.date || 'Recent'}</span>
+    <!-- Main Content Layout -->
+    <div class="container">
+      
+      <!-- News Feed Column -->
+      <main>
+        <div class="section-heading">Latest Reporting</div>
+
+        {posts.length === 0 ? (
+          <p style="color: var(--text-muted);">No reporting published yet.</p>
+        ) : (
+          <div class="posts-feed">
+            {posts.map((post) => (
+              <article class="article-card">
+                <div class="article-meta">
+                  PUBLIC SAFETY <span>• {post.frontmatter.date || 'Recent'}</span>
                 </div>
-                <h2 class="card-title">{post.frontmatter.title}</h2>
-                <p class="card-summary">{post.frontmatter.summary}</p>
-              </div>
-            </article>
-          ))}
+                <h2 class="article-title">{post.frontmatter.title}</h2>
+                <p class="article-summary">{post.frontmatter.summary}</p>
+              </article>
+            ))}
+          </div>
+        )}
+      </main>
+
+      <!-- Sidebar Column -->
+      <aside>
+        <div class="sidebar-box">
+          <h3 class="sidebar-title">About The JoCo Watch</h3>
+          <p class="sidebar-text">
+            We cover public safety and local stories across Johnson County. Not real-time breaking news—just clear, careful reporting.
+          </p>
         </div>
-      )}
-    </main>
+
+        <div class="sidebar-box">
+          <h3 class="sidebar-title">Tips & Story Ideas</h3>
+          <p class="sidebar-text">
+            Have a story or local issue we should investigate? Reach out directly to our team.
+          </p>
+          <a href="mailto:thejocowatch@gmail.com" class="contact-email">thejocowatch@gmail.com →</a>
+        </div>
+      </aside>
+
+    </div>
 
   </body>
 </html>
