@@ -2,18 +2,17 @@
 const allPosts = await Astro.glob('../content/posts/*.md');
 const now = new Date();
 
-// Logic: Check if post is featured AND expiration date hasn't passed
+// Filter Featured post (checks if featured is true and expiration hasn't passed)
 const featuredPost = allPosts.find(post => {
   if (!post.frontmatter.featured) return false;
   if (post.frontmatter.feature_until) {
     const expireDate = new Date(post.frontmatter.feature_until);
-    if (now > expireDate) return false; // Feature expired! Goes to regular feed.
+    if (now > expireDate) return false;
   }
   return true;
-});
+}) || allPosts[0]; // Falls back to newest post if none explicitly marked featured
 
-// Regular feed contains non-featured or expired-featured posts
-const feedPosts = allPosts.filter(post => post !== featuredPost);
+const feedPosts = allPosts;
 
 const categoryMap = {
   'public-safety': 'Public Safety',
@@ -36,48 +35,74 @@ const categoryMap = {
       :root { --brand-blue: #0A66C2; --brand-dark: #0F172A; --bg-body: #FAFAFA; --border-light: #E2E8F0; --text-main: #1E293B; --text-muted: #64748B; }
       * { box-sizing: border-box; margin: 0; padding: 0; }
       body { font-family: 'Inter', -apple-system, sans-serif; background-color: var(--bg-body); color: var(--text-main); line-height: 1.6; }
+      
       .top-bar { background: #fff; border-bottom: 1px solid var(--border-light); padding: 0.5rem 1.5rem; font-size: 0.8rem; color: var(--text-muted); }
       .top-bar-container { max-width: 1100px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
-      header { background: #ffffff; border-bottom: 2px solid var(--brand-dark); padding: 2.5rem 1.5rem 1.5rem; text-align: center; }
+
+      header { background: #ffffff; border-bottom: 2px solid var(--brand-dark); padding: 1.5rem 1.5rem 1rem; position: relative; }
+      .header-wrap { max-width: 1100px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; position: relative; }
+      
+      /* Logo position top-left of header */
+      .header-logo { position: absolute; left: 0; top: 0; height: 50px; width: auto; }
+      @media (max-width: 768px) { .header-logo { position: static; margin-bottom: 1rem; } }
+
       .brand-title { font-size: 2.75rem; font-weight: 800; color: var(--brand-dark); text-transform: uppercase; text-decoration: none; display: inline-block; }
       .brand-title span { color: var(--brand-blue); }
-      .tagline { font-family: 'Newsreader', serif; font-size: 1.15rem; font-style: italic; color: var(--text-muted); max-width: 650px; margin: 0.5rem auto 1.5rem; }
-      .nav-categories { display: flex; justify-content: center; gap: 2rem; border-top: 1px solid var(--border-light); padding-top: 1rem; font-size: 0.85rem; font-weight: 600; text-transform: uppercase; }
+      .tagline { font-family: 'Newsreader', serif; font-size: 1.15rem; font-style: italic; color: var(--text-muted); max-width: 650px; text-align: center; margin: 0.5rem auto 1.5rem; }
+
+      .nav-categories { display: flex; justify-content: center; gap: 2rem; border-top: 1px solid var(--border-light); padding-top: 1rem; font-size: 0.85rem; font-weight: 600; text-transform: uppercase; width: 100%; }
       .nav-categories a { color: var(--text-main); text-decoration: none; }
-      .nav-categories a:hover, .nav-categories a.active { color: var(--brand-blue); }
+      .nav-categories a:hover, .nav-categories a.active { color: var(--brand-blue); border-bottom: 2px solid var(--brand-blue); padding-bottom: 2px; }
+
       .container { max-width: 1100px; margin: 2.5rem auto; padding: 0 1.5rem; display: grid; grid-template-columns: 2fr 1fr; gap: 3rem; }
       @media (max-width: 768px) { .container { grid-template-columns: 1fr; } }
       .section-heading { font-size: 0.85rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: var(--brand-blue); border-bottom: 2px solid var(--brand-blue); padding-bottom: 0.4rem; margin-bottom: 1.5rem; }
       
       /* Featured Banner */
-      .featured-card { background: #ffffff; border: 2px solid var(--brand-blue); border-radius: 8px; padding: 1.5rem; margin-bottom: 2.5rem; text-decoration: none; color: inherit; display: block; }
+      .featured-card { background: #ffffff; border: 2px solid var(--brand-blue); border-radius: 8px; padding: 1.5rem; margin-bottom: 2.5rem; text-decoration: none; color: inherit; display: block; transition: box-shadow 0.2s ease; }
+      .featured-card:hover { box-shadow: 0 6px 20px rgba(10, 102, 194, 0.12); }
       .featured-badge { background: var(--brand-blue); color: #fff; font-size: 0.7rem; font-weight: 800; padding: 0.2rem 0.5rem; border-radius: 4px; text-transform: uppercase; margin-bottom: 0.5rem; display: inline-block; }
-      .featured-title { font-family: 'Newsreader', serif; font-size: 2rem; font-weight: 700; color: var(--brand-dark); margin-bottom: 0.5rem; }
-      .featured-img { width: 100%; max-height: 350px; object-fit: cover; border-radius: 6px; margin: 1rem 0; }
+      .featured-title { font-family: 'Newsreader', serif; font-size: 2.2rem; font-weight: 700; color: var(--brand-dark); margin-bottom: 0.5rem; line-height: 1.2; }
+      .featured-byline { font-size: 0.8rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.75rem; }
+      .featured-img { width: 100%; max-height: 380px; object-fit: cover; border-radius: 6px; margin: 1rem 0; border: 1px solid var(--border-light); }
 
       /* Standard Article Card */
       .posts-feed { display: flex; flex-direction: column; gap: 1.5rem; }
       .article-card { background: #ffffff; border: 1px solid var(--border-light); border-radius: 8px; padding: 1.25rem 1.5rem; text-decoration: none; color: inherit; display: grid; grid-template-columns: 1fr 140px; gap: 1.5rem; align-items: center; }
       .article-card:hover { border-color: var(--brand-blue); box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); }
-      .article-meta { font-size: 0.75rem; font-weight: 700; color: var(--brand-blue); text-transform: uppercase; margin-bottom: 0.35rem; }
+      .article-meta { font-size: 0.75rem; font-weight: 700; color: var(--brand-blue); text-transform: uppercase; margin-bottom: 0.2rem; }
+      .byline { font-size: 0.75rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.4rem; }
       .article-title { font-family: 'Newsreader', serif; font-size: 1.4rem; font-weight: 600; color: var(--brand-dark); margin-bottom: 0.4rem; }
       .article-summary { font-size: 0.88rem; color: var(--text-muted); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-      .thumbnail { width: 140px; height: 100px; object-fit: cover; border-radius: 6px; border: 1px solid var(--border-light); }
+      .thumbnail { width: 140px; height: 100px; object-fit: cover; border-radius: 6px; border: 1px solid var(--border-light); background-color: #f1f5f9; }
+      
       .sidebar-box { background: #ffffff; border: 1px solid var(--border-light); border-radius: 8px; padding: 1.5rem; margin-bottom: 2rem; }
     </style>
   </head>
   <body>
-    <div class="top-bar"><div class="top-bar-container"><span>Johnson County, Kansas</span><span>Independent Community Newsroom</span></div></div>
+    <div class="top-bar">
+      <div class="top-bar-container">
+        <span>Johnson County, Kansas</span>
+        <span>Independent Community Newsroom</span>
+      </div>
+    </div>
+
     <header>
-      <div class="masthead">
+      <div class="header-wrap">
+        <!-- Top Left Logo -->
+        <a href="/"><img src="/logo.png" alt="The JoCo Watch Logo" class="header-logo" onerror="this.style.display='none'" /></a>
+        
         <a href="/" class="brand-title">THE JOCO <span>WATCH</span></a>
         <p class="tagline">Clear, careful reporting on public safety, crime, courts, and local government across Johnson County.</p>
+
+        <!-- Navigation with "All Articles" moved to end -->
         <nav class="nav-categories">
-          <a href="/" class="active">All Articles</a>
+          <a href="/" class="active">Featured</a>
           <a href="/public-safety">Public Safety</a>
           <a href="/courts-crime">Courts & Crime</a>
           <a href="/city-issues">City Issues</a>
           <a href="/deep-dives">Deep Dives</a>
+          <a href="/all-articles">All Articles</a>
         </nav>
       </div>
     </header>
@@ -90,6 +115,7 @@ const categoryMap = {
             <a href={`/posts/${featuredPost.file.split('/').pop().replace('.md', '')}`} class="featured-card">
               <span class="featured-badge">FEATURED REPORT</span>
               <h2 class="featured-title">{featuredPost.frontmatter.title}</h2>
+              <div class="featured-byline">Written by: Umbrellaman • {featuredPost.frontmatter.date || 'Recent'}</div>
               {featuredPost.frontmatter.image && <img src={featuredPost.frontmatter.image} class="featured-img" alt="" />}
               <p style="color: var(--text-muted);">{featuredPost.frontmatter.summary}</p>
             </a>
@@ -105,6 +131,7 @@ const categoryMap = {
               <a href={`/posts/${slug}`} class="article-card">
                 <div>
                   <div class="article-meta">{catLabel} • {post.frontmatter.date || 'Recent'}</div>
+                  <div class="byline">Written by: Umbrellaman</div>
                   <h2 class="article-title">{post.frontmatter.title || slug.replace(/-/g, ' ')}</h2>
                   <p class="article-summary">{post.frontmatter.summary || 'Click to read reporting...'}</p>
                 </div>
