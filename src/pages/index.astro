@@ -1,13 +1,14 @@
 ---
+import Layout from '../layouts/Layout.astro';
+
 const allPosts = await Astro.glob('../content/posts/*.md');
 const now = new Date();
 
-// Strict featured check (handles booleans true/false and string "true"/"false")
+// STRICT FEATURED CHECK: Only match if explicitly true
 const featuredPost = allPosts.find(post => {
   const isFeatured = post.frontmatter.featured === true || String(post.frontmatter.featured).toLowerCase() === 'true';
   if (!isFeatured) return false;
 
-  // Check if expiration date passed
   if (post.frontmatter.feature_until) {
     const expireDate = new Date(post.frontmatter.feature_until);
     if (now > expireDate) return false;
@@ -15,7 +16,7 @@ const featuredPost = allPosts.find(post => {
   return true;
 });
 
-// Non-featured posts go into the regular feed below
+// Exclude featured post from the feed below if present
 const feedPosts = allPosts.filter(post => post !== featuredPost);
 
 const categoryMap = {
@@ -26,168 +27,56 @@ const categoryMap = {
 };
 ---
 
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>The JoCo Watch | Independent Johnson County Newsroom</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    
-    <style>
-      :root { --brand-blue: #0A66C2; --brand-dark: #0F172A; --bg-body: #FAFAFA; --border-light: #E2E8F0; --text-main: #1E293B; --text-muted: #64748B; }
-      * { box-sizing: border-box; margin: 0; padding: 0; }
-      body { font-family: 'Inter', -apple-system, sans-serif; background-color: var(--bg-body); color: var(--text-main); line-height: 1.6; }
-      
-      .top-bar { background: #fff; border-bottom: 1px solid var(--border-light); padding: 0.5rem 1.5rem; font-size: 0.8rem; color: var(--text-muted); }
-      .top-bar-container { max-width: 1100px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+<Layout title="The JoCo Watch | Independent Johnson County Newsroom" activeTab="featured">
+  <style>
+    .section-heading { font-size: 0.85rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: var(--brand-blue); border-bottom: 2px solid var(--brand-blue); padding-bottom: 0.4rem; margin-bottom: 1.5rem; }
+    .featured-card { background: #ffffff; border: 2px solid var(--brand-blue); border-radius: 8px; padding: 1.5rem; margin-bottom: 2.5rem; text-decoration: none; color: inherit; display: block; }
+    .featured-badge { background: var(--brand-blue); color: #fff; font-size: 0.7rem; font-weight: 800; padding: 0.2rem 0.5rem; border-radius: 4px; text-transform: uppercase; margin-bottom: 0.5rem; display: inline-block; }
+    .featured-title { font-family: 'Newsreader', serif; font-size: 2.2rem; font-weight: 700; color: var(--brand-dark); margin-bottom: 0.5rem; line-height: 1.2; }
+    .featured-byline { font-size: 0.8rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.75rem; }
+    .featured-img { width: 100%; max-height: 380px; object-fit: cover; border-radius: 6px; margin: 1rem 0; border: 1px solid var(--border-light); }
 
-      /* Translucent Weather Bug Styling */
-      .weather-bug {
-        background: rgba(15, 23, 42, 0.05);
-        border: 1px solid rgba(226, 232, 240, 0.9);
-        border-radius: 20px;
-        padding: 0.2rem 0.75rem;
-        font-size: 0.78rem;
-        font-weight: 600;
-        color: #475569;
-        display: inline-flex;
-        align-items: center;
-        gap: 0.4rem;
-        backdrop-filter: blur(4px);
-      }
-      .weather-dot { width: 7px; height: 7px; background-color: #3b82f6; border-radius: 50%; display: inline-block; }
+    .posts-feed { display: flex; flex-direction: column; gap: 1.5rem; }
+    .article-card { background: #ffffff; border: 1px solid var(--border-light); border-radius: 8px; padding: 1.25rem 1.5rem; text-decoration: none; color: inherit; display: grid; grid-template-columns: 1fr 140px; gap: 1.5rem; align-items: center; }
+    .article-card:hover { border-color: var(--brand-blue); box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); }
+    .article-meta { font-size: 0.75rem; font-weight: 700; color: var(--brand-blue); text-transform: uppercase; margin-bottom: 0.2rem; }
+    .byline { font-size: 0.75rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.4rem; }
+    .article-title { font-family: 'Newsreader', serif; font-size: 1.4rem; font-weight: 600; color: var(--brand-dark); margin-bottom: 0.4rem; }
+    .article-summary { font-size: 0.88rem; color: var(--text-muted); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .thumbnail { width: 140px; height: 100px; object-fit: cover; border-radius: 6px; border: 1px solid var(--border-light); background-color: #f1f5f9; }
+  </style>
 
-      header { background: #ffffff; border-bottom: 2px solid var(--brand-dark); padding: 1.5rem 1.5rem 1rem; position: relative; }
-      .header-wrap { max-width: 1100px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; position: relative; }
-      
-      .header-logo { position: absolute; left: 0; top: 0; height: 90px; width: auto; max-width: 180px; object-fit: contain; }
-      @media (max-width: 768px) { .header-logo { position: static; height: 75px; margin-bottom: 0.5rem; } }
-
-      .brand-title { font-size: 2.75rem; font-weight: 800; color: var(--brand-dark); text-transform: uppercase; text-decoration: none; display: inline-block; }
-      .brand-title span { color: var(--brand-blue); }
-      .tagline { font-family: 'Newsreader', serif; font-size: 1.15rem; font-style: italic; color: var(--text-muted); max-width: 650px; text-align: center; margin: 0.5rem auto 1.5rem; }
-
-      .nav-categories { display: flex; justify-content: center; gap: 2rem; border-top: 1px solid var(--border-light); padding-top: 1rem; font-size: 0.85rem; font-weight: 600; text-transform: uppercase; width: 100%; }
-      .nav-categories a { color: var(--text-main); text-decoration: none; }
-      .nav-categories a:hover, .nav-categories a.active { color: var(--brand-blue); border-bottom: 2px solid var(--brand-blue); padding-bottom: 2px; }
-
-      .container { max-width: 1100px; margin: 2.5rem auto; padding: 0 1.5rem; display: grid; grid-template-columns: 2fr 1fr; gap: 3rem; }
-      @media (max-width: 768px) { .container { grid-template-columns: 1fr; } }
-      .section-heading { font-size: 0.85rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: var(--brand-blue); border-bottom: 2px solid var(--brand-blue); padding-bottom: 0.4rem; margin-bottom: 1.5rem; }
-      
-      /* Featured Banner */
-      .featured-card { background: #ffffff; border: 2px solid var(--brand-blue); border-radius: 8px; padding: 1.5rem; margin-bottom: 2.5rem; text-decoration: none; color: inherit; display: block; transition: box-shadow 0.2s ease; }
-      .featured-card:hover { box-shadow: 0 6px 20px rgba(10, 102, 194, 0.12); }
-      .featured-badge { background: var(--brand-blue); color: #fff; font-size: 0.7rem; font-weight: 800; padding: 0.2rem 0.5rem; border-radius: 4px; text-transform: uppercase; margin-bottom: 0.5rem; display: inline-block; }
-      .featured-title { font-family: 'Newsreader', serif; font-size: 2.2rem; font-weight: 700; color: var(--brand-dark); margin-bottom: 0.5rem; line-height: 1.2; }
-      .featured-byline { font-size: 0.8rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.75rem; }
-      .featured-img { width: 100%; max-height: 380px; object-fit: cover; border-radius: 6px; margin: 1rem 0; border: 1px solid var(--border-light); }
-
-      /* Standard Article Card */
-      .posts-feed { display: flex; flex-direction: column; gap: 1.5rem; }
-      .article-card { background: #ffffff; border: 1px solid var(--border-light); border-radius: 8px; padding: 1.25rem 1.5rem; text-decoration: none; color: inherit; display: grid; grid-template-columns: 1fr 140px; gap: 1.5rem; align-items: center; }
-      .article-card:hover { border-color: var(--brand-blue); box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); }
-      .article-meta { font-size: 0.75rem; font-weight: 700; color: var(--brand-blue); text-transform: uppercase; margin-bottom: 0.2rem; }
-      .byline { font-size: 0.75rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.4rem; }
-      .article-title { font-family: 'Newsreader', serif; font-size: 1.4rem; font-weight: 600; color: var(--brand-dark); margin-bottom: 0.4rem; }
-      .article-summary { font-size: 0.88rem; color: var(--text-muted); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-      .thumbnail { width: 140px; height: 100px; object-fit: cover; border-radius: 6px; border: 1px solid var(--border-light); background-color: #f1f5f9; }
-      
-      .sidebar-box { background: #ffffff; border: 1px solid var(--border-light); border-radius: 8px; padding: 1.5rem; margin-bottom: 2rem; }
-    </style>
-  </head>
-  <body>
-    <div class="top-bar">
-      <div class="top-bar-container">
-        <span>Johnson County, Kansas • Independent Newsroom</span>
-        <!-- Translucent Temp Bug -->
-        <div id="weather-bug" class="weather-bug">
-          <span class="weather-dot"></span>
-          <span id="weather-temp">JoCo --°F</span>
-        </div>
-      </div>
+  {featuredPost && (
+    <div>
+      <div class="section-heading">Featured Story</div>
+      <a href={`/posts/${featuredPost.file.split('/').pop().replace('.md', '')}`} class="featured-card">
+        <span class="featured-badge">FEATURED REPORT</span>
+        <h2 class="featured-title">{featuredPost.frontmatter.title}</h2>
+        <div class="featured-byline">Written by: Umbrellaman • {featuredPost.frontmatter.date ? String(featuredPost.frontmatter.date).split('T')[0] : 'Recent'}</div>
+        {featuredPost.frontmatter.image && <img src={featuredPost.frontmatter.image} class="featured-img" alt="" />}
+        <p style="color: var(--text-muted);">{featuredPost.frontmatter.summary}</p>
+      </a>
     </div>
+  )}
 
-    <header>
-      <div class="header-wrap">
-        <a href="/"><img src="/logo.png" alt="The JoCo Watch Logo" class="header-logo" onerror="this.style.display='none'" /></a>
-        
-        <a href="/" class="brand-title">THE JOCO <span>WATCH</span></a>
-        <p class="tagline">Clear, careful reporting on public safety, crime, courts, and local government across Johnson County.</p>
-
-        <nav class="nav-categories">
-          <a href="/" class="active">Featured</a>
-          <a href="/public-safety">Public Safety</a>
-          <a href="/courts-crime">Courts & Crime</a>
-          <a href="/city-issues">City Issues</a>
-          <a href="/deep-dives">Deep Dives</a>
-          <a href="/all-articles">All Articles</a>
-        </nav>
-      </div>
-    </header>
-
-    <div class="container">
-      <main>
-        {featuredPost ? (
+  <div class="section-heading">Latest Reporting</div>
+  
+  <div class="posts-feed">
+    {feedPosts.map((post) => {
+      const slug = post.file.split('/').pop().replace('.md', '');
+      const catLabel = categoryMap[post.frontmatter.category] || 'Courts & Crime';
+      const cleanDate = post.frontmatter.date ? String(post.frontmatter.date).split('T')[0] : 'Recent';
+      return (
+        <a href={`/posts/${slug}`} class="article-card">
           <div>
-            <div class="section-heading">Featured Story</div>
-            <a href={`/posts/${featuredPost.file.split('/').pop().replace('.md', '')}`} class="featured-card">
-              <span class="featured-badge">FEATURED REPORT</span>
-              <h2 class="featured-title">{featuredPost.frontmatter.title}</h2>
-              <div class="featured-byline">Written by: Umbrellaman • {featuredPost.frontmatter.date || 'Recent'}</div>
-              {featuredPost.frontmatter.image && <img src={featuredPost.frontmatter.image} class="featured-img" alt="" />}
-              <p style="color: var(--text-muted);">{featuredPost.frontmatter.summary}</p>
-            </a>
+            <div class="article-meta">{catLabel} • {cleanDate}</div>
+            <div class="byline">Written by: Umbrellaman</div>
+            <h2 class="article-title">{post.frontmatter.title || slug.replace(/-/g, ' ')}</h2>
+            <p class="article-summary">{post.frontmatter.summary || 'Click to read reporting...'}</p>
           </div>
-        ) : null}
-
-        <div class="section-heading">Latest Reporting</div>
-        
-        <div class="posts-feed">
-          {feedPosts.map((post) => {
-            const slug = post.file.split('/').pop().replace('.md', '');
-            const catLabel = categoryMap[post.frontmatter.category] || 'Courts & Crime';
-            return (
-              <a href={`/posts/${slug}`} class="article-card">
-                <div>
-                  <div class="article-meta">{catLabel} • {post.frontmatter.date || 'Recent'}</div>
-                  <div class="byline">Written by: Umbrellaman</div>
-                  <h2 class="article-title">{post.frontmatter.title || slug.replace(/-/g, ' ')}</h2>
-                  <p class="article-summary">{post.frontmatter.summary || 'Click to read reporting...'}</p>
-                </div>
-                {post.frontmatter.image && <img src={post.frontmatter.image} alt="" class="thumbnail" />}
-              </a>
-            );
-          })}
-        </div>
-      </main>
-
-      <aside>
-        <div class="sidebar-box">
-          <h3 style="font-size: 1rem; font-weight: 700; margin-bottom: 0.75rem;">About The JoCo Watch</h3>
-          <p style="font-size: 0.9rem; color: var(--text-muted);">We cover public safety and local stories across Johnson County. Not real-time breaking news—just clear, careful reporting.</p>
-        </div>
-      </aside>
-    </div>
-
-    <!-- Client Script to fetch Johnson County Live Temp -->
-    <script>
-      async function fetchJoCoTemp() {
-        try {
-          const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=38.98&longitude=-94.67&current_weather=true&temperature_unit=fahrenheit');
-          const data = await res.json();
-          if (data && data.current_weather) {
-            const temp = Math.round(data.current_weather.temperature);
-            const el = document.getElementById('weather-temp');
-            if (el) el.textContent = `JoCo ${temp}°F`;
-          }
-        } catch (e) {
-          console.error('Weather fetch error', e);
-        }
-      }
-      fetchJoCoTemp();
-    </script>
-  </body>
-</html>
+          {post.frontmatter.image && <img src={post.frontmatter.image} alt="" class="thumbnail" />}
+        </a>
+      );
+    })}
+  </div>
+</Layout>
