@@ -22,13 +22,13 @@ content:
         label: Category
         type: select
         options:
-          - label: Public Safety
+          - name: Public Safety
             value: public-safety
-          - label: Courts & Crime
+          - name: Courts & Crime
             value: courts-crime
-          - label: City Issues
+          - name: City Issues
             value: city-issues
-          - label: Deep Dives
+          - name: Deep Dives
             value: deep-dives
         default: courts-crime
       - name: featured
