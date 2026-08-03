@@ -36,11 +36,12 @@ const { Content } = post;
       header { background: #fff; border-bottom: 2px solid var(--brand-dark); padding: 1.5rem; text-align: center; }
       .brand-title { font-size: 2rem; font-weight: 800; color: var(--brand-dark); text-decoration: none; text-transform: uppercase; }
       .brand-title span { color: var(--brand-blue); }
-      .article-container { max-width: 760px; margin: 3rem auto; padding: 0 1.5rem; background: #fff; border: 1px solid var(--border-light); border-radius: 8px; padding: 2.5rem; }
-      .meta { font-size: 0.85rem; font-weight: 700; color: var(--brand-blue); text-transform: uppercase; margin-bottom: 0.75rem; }
+      .article-container { max-width: 760px; margin: 3rem auto; padding: 2.5rem; background: #fff; border: 1px solid var(--border-light); border-radius: 8px; }
+      .meta { font-size: 0.85rem; font-weight: 700; color: var(--brand-blue); text-transform: uppercase; margin-bottom: 0.25rem; }
+      .byline { font-size: 0.85rem; font-weight: 600; color: var(--text-muted); margin-bottom: 1.25rem; }
       h1 { font-family: 'Newsreader', serif; font-size: 2.5rem; line-height: 1.2; color: var(--brand-dark); margin-bottom: 1rem; }
       .summary { font-size: 1.1rem; color: var(--text-muted); font-style: italic; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-light); padding-bottom: 1rem; }
-      .featured-img { width: 100%; max-height: 400px; object-fit: cover; border-radius: 6px; margin-bottom: 1.5rem; }
+      .featured-img { width: 100%; max-height: 450px; object-fit: cover; border-radius: 6px; margin-bottom: 1.5rem; border: 1px solid var(--border-light); }
       .content { font-size: 1.05rem; color: #334155; }
       .content p { margin-bottom: 1.25rem; }
       .back-btn { display: inline-block; margin-bottom: 1.5rem; color: var(--brand-blue); text-decoration: none; font-weight: 600; font-size: 0.9rem; }
@@ -52,7 +53,8 @@ const { Content } = post;
     </header>
     <div class="article-container">
       <a href="/" class="back-btn">← Back to Homepage</a>
-      <div class="meta">{post.frontmatter.category || 'NEWS'} • {post.frontmatter.date || 'Recent'}</div>
+      <div class="meta">{post.frontmatter.category || 'COURTS & CRIME'} • {post.frontmatter.date || 'Recent'}</div>
+      <div class="byline">Written by: Umbrelllaman</div>
       <h1>{post.frontmatter.title || 'Untitled Article'}</h1>
       {post.frontmatter.summary && <p class="summary">{post.frontmatter.summary}</p>}
       {post.frontmatter.image && <img src={post.frontmatter.image} alt="Featured" class="featured-img" />}
