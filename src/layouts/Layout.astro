@@ -24,7 +24,6 @@ const { title, activeTab = '' } = Astro.props;
       .top-bar { background: #fff; border-bottom: 1px solid var(--border-light); padding: 0.5rem 1.5rem; font-size: 0.8rem; color: var(--text-muted); }
       .top-bar-container { max-width: 1100px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
 
-      /* Translucent Weather Bug */
       .weather-bug {
         background: rgba(15, 23, 42, 0.04);
         border: 1px solid var(--border-light);
@@ -61,7 +60,6 @@ const { title, activeTab = '' } = Astro.props;
     <div class="top-bar">
       <div class="top-bar-container">
         <span>Johnson County, Kansas • Independent Newsroom</span>
-        <!-- Minimal Translucent Weather Bug -->
         <div class="weather-bug">
           <span id="weather-temp">Current temp --°F</span>
         </div>
@@ -81,7 +79,7 @@ const { title, activeTab = '' } = Astro.props;
           <a href="/courts-crime" class={activeTab === 'courts-crime' ? 'active' : ''}>Courts & Crime</a>
           <a href="/city-issues" class={activeTab === 'city-issues' ? 'active' : ''}>City Issues</a>
           <a href="/deep-dives" class={activeTab === 'deep-dives' ? 'active' : ''}>Deep Dives</a>
-          <a href="/all-articles" class={activeTab === 'all-articles' ? 'active' : ''}>All Articles</a>
+          <a href="/archive" class={activeTab === 'archive' ? 'active' : ''}>Archive</a>
         </nav>
       </div>
     </header>
