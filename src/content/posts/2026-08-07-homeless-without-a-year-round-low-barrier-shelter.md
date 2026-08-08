@@ -5,6 +5,7 @@ category: city-issues
 featured: true
 feature_until: 2026-08-31
 archive_after: 2026-10-31
+image: /images/IMG_8269.jpeg
 ---
 According to the most recent data, homelessness in Johnson County is up about 27%. Johnson County has no permanent year-round low-barrier shelter for single adults. A planned conversion of the Lenexa La Quinta hotel (using COVID-relief funds) was blocked by the Lenexa City Council in 2024; the county later terminated the related contracts. The only dedicated adult option is the seasonal Project 1020, whose focus is the cold weather season, roughly December–March. Capacity at Project 1020 was expanded to 50, but is frequently full. County leaders have redirected some funds to other affordable housing and are exploring new sites, but the gap persists amid rising rents and population growth. 
 
