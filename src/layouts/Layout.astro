@@ -24,9 +24,17 @@ const { title, activeTab = '' } = Astro.props;
     <style>
       :root { --brand-blue: #0A66C2; --brand-dark: #0F172A; --bg-body: #FAFAFA; --border-light: #E2E8F0; --text-main: #1E293B; --text-muted: #64748B; }
       * { box-sizing: border-box; margin: 0; padding: 0; }
-      body { font-family: 'Inter', -apple-system, sans-serif; background-color: var(--bg-body); color: var(--text-main); line-height: 1.6; }
       
-      .top-bar { background: #fff; border-bottom: 1px solid var(--border-light); padding: 0.5rem 1.5rem; font-size: 0.8rem; color: var(--text-muted); }
+      html, body { 
+        max-width: 100vw; 
+        overflow-x: hidden; 
+        font-family: 'Inter', -apple-system, sans-serif; 
+        background-color: var(--bg-body); 
+        color: var(--text-main); 
+        line-height: 1.6; 
+      }
+      
+      .top-bar { background: #fff; border-bottom: 1px solid var(--border-light); padding: 0.5rem 1rem; font-size: 0.8rem; color: var(--text-muted); }
       .top-bar-container { max-width: 1100px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
 
       .weather-bug {
@@ -41,10 +49,10 @@ const { title, activeTab = '' } = Astro.props;
         align-items: center;
       }
 
-      header { background: #ffffff; border-bottom: 2px solid var(--brand-dark); padding: 1.5rem 1.5rem 1rem; position: relative; }
+      header { background: #ffffff; border-bottom: 2px solid var(--brand-dark); padding: 1.25rem 1rem 0; position: relative; }
       .header-wrap { max-width: 1100px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; position: relative; }
       
-      .header-logo { position: absolute; left: 0; top: 0; height: 110px; width: auto; max-width: 220px; object-fit: contain; }
+      .header-logo { position: absolute; left: 0; top: 0; height: 90px; width: auto; max-width: 180px; object-fit: contain; }
       
       .header-contacts { position: absolute; right: 0; top: 5px; display: flex; flex-direction: column; align-items: flex-end; gap: 0.25rem; font-size: 0.82rem; font-weight: 600; }
       .header-contacts a { color: var(--text-muted); text-decoration: none; display: flex; align-items: center; gap: 0.35rem; transition: color 0.15s ease; }
@@ -52,29 +60,79 @@ const { title, activeTab = '' } = Astro.props;
       
       .tip-btn { color: var(--brand-blue) !important; font-weight: 700; text-transform: uppercase; font-size: 0.78rem; letter-spacing: 0.03em; }
 
-      @media (max-width: 768px) { 
-        .header-logo, .header-contacts { position: static; margin-bottom: 0.75rem; align-items: center; } 
+      .brand-title { font-size: 2.2rem; font-weight: 800; color: var(--brand-dark); text-transform: uppercase; text-decoration: none; display: inline-block; text-align: center; line-height: 1.1; }
+      .brand-title span { color: var(--brand-blue); }
+      .tagline { font-family: 'Newsreader', serif; font-size: 1rem; font-style: italic; color: var(--text-muted); max-width: 650px; text-align: center; margin: 0.5rem auto 1.25rem; }
+
+      /* MOBILE SCROLLABLE NAVIGATION */
+      .nav-categories { 
+        display: flex; 
+        justify-content: flex-start; 
+        align-items: center;
+        gap: 1.5rem; 
+        border-top: 1px solid var(--border-light); 
+        padding: 0.85rem 0; 
+        font-size: 0.82rem; 
+        font-weight: 700; 
+        text-transform: uppercase; 
+        width: 100%; 
+        overflow-x: auto;
+        white-space: nowrap;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
       }
 
-      .brand-title { font-size: 2.75rem; font-weight: 800; color: var(--brand-dark); text-transform: uppercase; text-decoration: none; display: inline-block; }
-      .brand-title span { color: var(--brand-blue); }
-      .tagline { font-family: 'Newsreader', serif; font-size: 1.15rem; font-style: italic; color: var(--text-muted); max-width: 650px; text-align: center; margin: 0.5rem auto 1.5rem; }
+      .nav-categories::-webkit-scrollbar {
+        display: none;
+      }
 
-      .nav-categories { display: flex; justify-content: center; gap: 2rem; border-top: 1px solid var(--border-light); padding-top: 1rem; font-size: 0.85rem; font-weight: 600; text-transform: uppercase; width: 100%; }
-      .nav-categories a { color: var(--text-main); text-decoration: none; }
-      .nav-categories a:hover, .nav-categories a.active { color: var(--brand-blue); border-bottom: 2px solid var(--brand-blue); padding-bottom: 2px; }
-
-      .container { max-width: 1100px; margin: 2.5rem auto; padding: 0 1.5rem; display: grid; grid-template-columns: 2fr 1fr; gap: 3rem; }
-      @media (max-width: 768px) { .container { grid-template-columns: 1fr; } }
+      .nav-categories a { 
+        color: var(--text-main); 
+        text-decoration: none; 
+        flex-shrink: 0;
+        padding-bottom: 2px;
+      }
       
-      .sidebar-box { background: #ffffff; border: 1px solid var(--border-light); border-radius: 8px; padding: 1.5rem; margin-bottom: 1.5rem; }
+      .nav-categories a:hover, .nav-categories a.active { 
+        color: var(--brand-blue); 
+        border-bottom: 2px solid var(--brand-blue); 
+      }
+
+      .container { max-width: 1100px; margin: 1.5rem auto; padding: 0 1rem; display: grid; grid-template-columns: 1fr; gap: 2rem; }
+      
+      .sidebar-box { background: #ffffff; border: 1px solid var(--border-light); border-radius: 8px; padding: 1.25rem; margin-bottom: 1.5rem; }
       .newsletter-box { background: #F8FAFC; border: 1px solid #CBD5E1; }
+
+      /* DESKTOP BREAKPOINT (768px+) */
+      @media (min-width: 768px) {
+        header { padding: 1.5rem 1.5rem 0; }
+        .header-logo { height: 110px; max-width: 220px; }
+        .brand-title { font-size: 2.75rem; }
+        .tagline { font-size: 1.15rem; margin: 0.5rem auto 1.5rem; }
+        
+        .nav-categories {
+          justify-content: center;
+          gap: 2rem;
+          font-size: 0.85rem;
+          padding: 1rem 0;
+          overflow-x: visible;
+        }
+
+        .container { margin: 2.5rem auto; padding: 0 1.5rem; grid-template-columns: 2fr 1fr; gap: 3rem; }
+        .sidebar-box { padding: 1.5rem; }
+      }
+
+      /* MOBILE HEADER STACKING (<768px) */
+      @media (max-width: 767px) { 
+        .header-logo, .header-contacts { position: static; margin-bottom: 0.75rem; align-items: center; } 
+        .header-contacts { flex-direction: row; flex-wrap: wrap; justify-content: center; gap: 0.75rem; }
+      }
     </style>
   </head>
   <body>
     <div class="top-bar">
       <div class="top-bar-container">
-        <span>Johnson County, Kansas • Independent Newsroom</span>
+        <span>Johnson County, KS • Independent Newsroom</span>
         <div class="weather-bug">
           <span id="weather-temp">Current temp --°F</span>
         </div>
