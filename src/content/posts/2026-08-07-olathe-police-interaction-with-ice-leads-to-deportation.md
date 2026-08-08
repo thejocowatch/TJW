@@ -1,7 +1,7 @@
 ---
 title: Olathe Police Interaction With ICE Leads To Deportation
 date: 2026-08-07
-category: courts-crime
+category: public-safety
 featured: true
 feature_until: 2026-08-31
 archive_after: 2026-10-31
