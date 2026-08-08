@@ -2,7 +2,7 @@
 title: Homeless Without A Year Round, Low Barrier Shelter
 date: 2026-08-07
 category: city-issues
-featured: false
+featured: true
 feature_until: 2026-08-31
 archive_after: 2026-10-31
 ---
