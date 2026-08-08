@@ -4,7 +4,14 @@ import Layout from '../layouts/Layout.astro';
 const allPosts = await Astro.glob('../content/posts/*.md');
 const now = new Date();
 
-// Helper: Check if an article is active (not auto-archived)
+// Helper 1: Safely parse dates into numeric timestamps for strict chronological sorting (newest first)
+function getTimestamp(dateStr) {
+  if (!dateStr) return 0;
+  const time = new Date(dateStr).getTime();
+  return isNaN(time) ? 0 : time;
+}
+
+// Helper 2: Check if an article is active (not auto-archived)
 function isArticleActive(post) {
   if (post.frontmatter.archive_after) {
     const archiveDate = new Date(post.frontmatter.archive_after);
@@ -13,10 +20,10 @@ function isArticleActive(post) {
   return true;
 }
 
-// 1. Get ALL active stories (not auto-archived) sorted by date descending
+// 1. Get ALL active stories, strictly sorted by NEWEST date first
 const activePosts = allPosts
   .filter(isArticleActive)
-  .sort((a, b) => new Date(b.frontmatter.date || 0) - new Date(a.frontmatter.date || 0));
+  .sort((a, b) => getTimestamp(b.frontmatter.date) - getTimestamp(a.frontmatter.date));
 
 // 2. Filter Featured stories (must be active AND featured AND not expired)
 const featuredPosts = activePosts.filter(post => {
@@ -102,7 +109,14 @@ const categoryMap = {
         {recentPosts.map((post) => {
           const slug = post.file.split('/').pop().replace('.md', '');
           const cleanDate = post.frontmatter.date ? String(post.frontmatter.date).split('T')[0] : 'Recent';
-          const catSlug = (post.frontmatter.category || '').toLowerCase().trim();
+          
+          // Normalize category slug (e.g. "City Issues" -> "city-issues")
+          const catSlug = (post.frontmatter.category || '')
+            .toLowerCase()
+            .trim()
+            .replace(/\s+/g, '-')
+            .replace(/&/g, '');
+
           const categoryLabel = categoryMap[catSlug] || 'COURTS & CRIME';
 
           return (
