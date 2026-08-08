@@ -1,7 +1,7 @@
 ---
 title: Data Center Development And Community Opposition
 date: 2026-08-07
-category: city-issued
+category: city-issues
 featured: true
 feature_until: 2026-08-31
 archive_after: 2026-10-31
